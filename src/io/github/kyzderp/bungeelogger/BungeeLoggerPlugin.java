@@ -29,7 +29,7 @@ public class BungeeLoggerPlugin extends Plugin
 	public static BungeeLoggerPlugin instance;
 
 	private DailyRollingFileAppender rollingAppender;
-	private Logger selfLogger;
+	private BungeeLog selfLogger;
 
 	public void onLoad() 
 	{
@@ -78,7 +78,7 @@ public class BungeeLoggerPlugin extends Plugin
 		rootLogger.addAppender(rollingAppender);
 
 		// Create custom logger for this plugin
-		this.selfLogger = Logger.getLogger(BungeeLoggerPlugin.class);
+		this.selfLogger = new BungeeLog(this);
 
 		this.selfLogger.info("Initialized self logger.");
 	}
