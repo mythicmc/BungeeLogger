@@ -1,0 +1,5 @@
+name: BungeeLogger
+main: io.github.kyzderp.bungeelogger.BungeeLoggerPlugin
+version: 1.0.0
+author: Kyzeragon
+depends: []
