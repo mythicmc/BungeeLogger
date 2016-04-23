@@ -21,6 +21,11 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Logger class for BungeeLogger, to be invoked similar to other Logger classes
+ * @author Kyzeragon
+ *
+ */
 public class BungeeLog 
 {
 	private Logger logger;
