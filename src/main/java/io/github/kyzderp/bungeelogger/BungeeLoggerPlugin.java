@@ -17,7 +17,14 @@
 
 package io.github.kyzderp.bungeelogger;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 import org.apache.log4j.DailyRollingFileAppender;
 import org.apache.log4j.Level;
@@ -30,9 +37,30 @@ public class BungeeLoggerPlugin extends Plugin
 
 	private DailyRollingFileAppender rollingAppender;
 	private BungeeLog selfLogger;
+	private String logFolder = "logs";
 
 	public void onLoad() 
 	{
+		// Create config.yml.
+		if (!getDataFolder().exists())
+			getDataFolder().mkdir();
+		File file = new File(getDataFolder(), "config.yml");
+		if (!file.exists()) {
+			try (InputStream in = getResourceAsStream("config.yml")) {
+				Files.copy(in, file.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// Load it and read the content.
+		try {
+			this.logFolder = ConfigurationProvider.getProvider(YamlConfiguration.class)
+				.load(new File(getDataFolder(), "config.yml"))
+				.getString("logFolder", "logs");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// Initialise instance and logger.
 		instance = this;
 		this.initializeAppender();
 	}
@@ -67,7 +95,7 @@ public class BungeeLoggerPlugin extends Plugin
 
 		// Create daily rolling file appender
 		this.rollingAppender = new DailyRollingFileAppender();
-		this.rollingAppender.setFile("logs/bungee.log");
+		this.rollingAppender.setFile(this.logFolder + "/bungee.log");
 		this.rollingAppender.setDatePattern("'.'yyyy-MM-dd");
 		this.rollingAppender.setLayout(layout);
 		this.rollingAppender.activateOptions();
@@ -81,5 +109,10 @@ public class BungeeLoggerPlugin extends Plugin
 		this.selfLogger = new BungeeLog(this);
 
 		this.selfLogger.info("Initialized self logger.");
+	}
+
+	public String getLogFolder()
+	{
+		return logFolder;
 	}
 }

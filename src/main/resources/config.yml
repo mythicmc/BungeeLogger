@@ -1,0 +1,2 @@
+# Relative to plugins folder. No trailing slashes allowed.
+logFolder: "logs"
